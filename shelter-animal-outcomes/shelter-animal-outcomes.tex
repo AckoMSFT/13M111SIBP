@@ -83,7 +83,7 @@
     \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
     \usepackage{mathrsfs}
     
-
+    \usepackage[options]{nohyperref}
     
     % Colors for the hyperref package
     \definecolor{urlcolor}{rgb}{0,.145,.698}
@@ -386,16 +386,46 @@
     \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
     
     
+\renewcommand{\contentsname}%
+{Sadržaj}%
+
+
+\usepackage{biblatex}
+\addbibresource{weka.bib}
+\renewcommand{\bibname}{Literatura}
 
 \begin{document}
     
-    \maketitle
-    
-    
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.15\textwidth]{LogoETF.png}\par\vspace{1cm}
+	{\LARGE \textsc{Univerzitet u Beogradu, Elektrotehnčki fakultet}\par}
+	\vspace{0.5cm}
+	{\Large \textsc{Softversko inženjerstvo velikih baza podataka}\par}
+    \vspace{0.5cm}
+    {\Large \textsc{Domaći zadatak}\par}
+	\vspace{1.5cm}
+	{\huge\bfseries Primena modela mašinskog učenja na problemu Shelter Animal Outcomes sa platforme Kaggle\par}
+	\vspace{2cm}
+	\vfill
 
+    \vfill \vfill
+    Mentori \hspace*{\fill} Student \par
+    dr Miroslav Bojović \hspace*{\fill} Aleksandar Ivanović, 2023/3468 \par
+    ms Stefan Tubić \hspace*{\fill}\par
+	\vfill
+	{\large Beograd, januar 2024\par}
+\end{titlepage}
+    
+    
+\hypersetup{pdfborder=0 0 0}
+
+\tableofcontents
+
+\newpage
     
     \hypertarget{opis-problema}{%
-\subsection{Opis problema}\label{opis-problema}}
+\section{Opis problema}\label{opis-problema}}
 
 Svake godine, približno 7.6 miliona kućnih ljubimaca završi u azilima
 širom Amerike. Dosta životinja vlasnici više ne žele, a ostale se
@@ -410,34 +440,55 @@ Animal Center koji sadrži informacije poput rase, boje, pola i starosti
 Za svaku životinju i svaku sudbinu treba da izračunamo verovatnoću da
 životinja ima tu sudbinu:
 
+
 \begin{verbatim}
 AnimalID,Adoption,Died,Euthanasia,Return_to_owner,Transfer
 A715022,1,0,0,0,0
 A677429,0.5,0.3,0.2,0,0
 ...
-etc.
+itd.
 \end{verbatim}
 
-Moguće sudbine, odnosno ishodi, su: - Adoption (životinja je pronašla
-novi dom) - Died (životinja je nažalost preminula) - Euthanasia
-(životinja je nažalost uspavana) - Return\_to\_owner (životinja je
-vraćena svom vlasniku) - Transfer (životinja je premeštena u drugi azil)
+
+Moguće sudbine, odnosno ishodi, su:
+\begin{itemize}
+    \item Adoption (životinja je pronašla
+novi dom)
+    \item Died (životinja je nažalost preminula) 
+    \item Euthanasia (životinja je nažalost uspavana) 
+    \item Return\_to\_owner (životinja je vraćena svom vlasniku)
+    \item Transfer (životinja je premeštena u drugi azil)
+\end{itemize}
 
 Rešenje će se ocenjivati takozvanom multi-class logarithmic loss
 funkcijom:
 
+\begin{center}
 \(logloss = -\frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{M} y_{ij} \log_e{(p_{ij})}\)
+\end{center}
 
-\(N\) predstavlja broj životinja u skupu podataka koji se koristi za
-testiranje, \(M\) broj mogućih sudbina, \(log_e\) prirodni logiram,
-\(y_{ij}\) ima vrednost \(1\) ukoliko је životinju \(i\) zadesila
-sudbina \(j\), a u suprotnom ima vrednost \(0\) i \(p_{ij}\) predstavlja
-verovatnoću koju smo mi izračunali.
+\begin{itemize}
+
+\item \(N\) predstavlja broj životinja u skupu podataka koji se koristi za
+testiranje
+\item \(M\) predstavlja broj mogućih sudbina (ishoda)
+\item \(log_e\) predstavlja prirodni logiram
+\item \(y_{ij}\) ima vrednost \(1\) ukoliko је životinju \(i\) zadesila
+sudbina \(j\), a u suprotnom ima vrednost \(0\)
+\item \(p_{ij}\) predstavlja verovatnoću koju smo mi izračunali
+
+\end{itemize}
 
 Jasno je da bolje rešenje ima manju vrednost funkcije \(logloss\), dakle
 funkciju \(logloss\) je potrebno minimizovati.
 
-    \hypertarget{uux10ditavanje-potrebnih-python-paketa}{%
+\newpage 
+
+\section{Učitavanje, analiza i preprocesiranje ulaznih podataka}
+
+U ovoj sekciji ćemo se baviti analizom i obradom ulaznih podataka.
+
+\hypertarget{uux10ditavanje-potrebnih-python-paketa}{%
 \subsection{Učitavanje potrebnih Python
 paketa}\label{uux10ditavanje-potrebnih-python-paketa}}
 
@@ -477,8 +528,7 @@ paketa}\label{uux10ditavanje-potrebnih-python-paketa}}
 \end{tcolorbox}
 
     \hypertarget{uux10ditavanje-analiza-i-preprocesiranje-podataka}{%
-\subsection{Učitavanje, analiza i preprocesiranje
-podataka}\label{uux10ditavanje-analiza-i-preprocesiranje-podataka}}
+\subsection{Analiza ulaznih podataka}\label{uux10ditavanje-analiza-i-preprocesiranje-podataka}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{3}{\boxspacing}
@@ -548,6 +598,8 @@ freq           2824
 \end{Verbatim}
 \end{tcolorbox}
         
+\newpage 
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{5}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -576,7 +628,7 @@ memory usage: 2.0+ MB
     \end{Verbatim}
 
     \hypertarget{sudbina-ljubimaca}{%
-\subsubsection{Sudbina ljubimaca}\label{sudbina-ljubimaca}}
+\subsection{Sudbina ljubimaca}\label{sudbina-ljubimaca}}
 
     Najčešći ishodi u skupu podataka za treniranje algoritama su usvajanje,
 transfer, kao i vraćanje izgubljenih kućnih ljubimaca vlasnicima.
@@ -772,8 +824,7 @@ takozvani ``mešanci''.
     { \hspace*{\fill} \\}
     
     \hypertarget{enkodovanje-ulaznih-podataka}{%
-\subsubsection{Enkodovanje ulaznih
-podataka}\label{enkodovanje-ulaznih-podataka}}
+\subsection{Preprocesiranje ulaznih podataka}\label{enkodovanje-ulaznih-podataka}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{19}{\boxspacing}
@@ -809,7 +860,12 @@ podataka}\label{enkodovanje-ulaznih-podataka}}
 \end{tcolorbox}
         
     Možemo primetiti da dosta naših atributa (features) jesu znakovnog tipa,
-na primer: - Breed (rasa) - Color (boja) - AnimalType (pas ili mačka)
+na primer: 
+\begin{itemize}
+\item Breed (rasa)
+\item Color (boja)
+\item AnimalType (pas ili mačka)
+\end{itemize}
 
 Rad sa znakovnim podacima nije pogodan za algoritme mašinskog učenja i
 njima moramo pronaći neku numeričku vrednost. Najjednostavniji način za
@@ -820,6 +876,8 @@ znakovnih vrednosti transformiše u skup čiji elementi pripadaju skupu
 
 Naravno, naše enkodere moramo kreirati koristeći uniju skupova podataka
 za treniranje i testiranje kako bi smo obuhvatili sve moguće vrednosti.
+
+\newpage
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{20}{\boxspacing}
@@ -857,14 +915,21 @@ za treniranje i testiranje kako bi smo obuhvatili sve moguće vrednosti.
 \end{Verbatim}
 \end{tcolorbox}
 
-    Naše ulazne karakteristike ćemo dopuniti sa nekoliko novih kao što su: -
-is\_mix (da li je životinja ``mešanac'') - year (godina) - month (mesec)
-- day (dan)
+    Naše ulazne karakteristike ćemo dopuniti sa nekoliko novih kao što su: 
+\begin{itemize}
+
+\item is\_mix (da li je životinja ``mešanac'') 
+\item year (godina)
+\item month (mesec)
+\item day (dan)
+\end{itemize}
 
 Karakteristiku \texttt{DateTime} ćemo podeliti u 3 dela (godina, mesec i
 dan) kako bi smo pokušali da uočimo korelaciju između ishoda i dana u
 godini (na primer, ljudi možda češće usvajaju životinje u prazničnoj
 atmosferi).
+
+\newpage 
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{21}{\boxspacing}
@@ -921,24 +986,34 @@ atmosferi).
 \end{tcolorbox}
 
     \hypertarget{poreux111enje-modela-maux161inskog-uux10denja}{%
-\subsubsection{Poređenje modela mašinskog
+\section{Poređenje modela mašinskog
 učenja}\label{poreux111enje-modela-maux161inskog-uux10denja}}
 
-Sada ćemo porediti nekoliko modela mašinskog učenja koristeći unakrsnu
-validaciju. Modeli koji su nam interesantni jesu: -
-RandomForestClassifier - DecisionTreeClassifier - ExtraTreesClassifier -
-GradientBoostingClassifier - Deep learning neural network model (Keras
-Sequential Model)
+U ovoj sekciji ćemo porediti nekoliko modela mašinskog učenja koristeći unakrsnu
+validaciju. Modeli koji ćemo obraditi su: 
+\begin{itemize}
+\item RandomForestClassifier
+\item DecisionTreeClassifier
+\item ExtraTreesClassifier
+\item GradientBoostingClassifier
+\item Deep learning neural network model (Keras Sequential Model)
+\end{itemize}
 
-Koristićemo pomoćne funkcije paketa \texttt{sklearn.model\_selection}: -
-cross\_val\_score (koja radi unakrsnu validaciju) - means (koja vraća
-ocenu modela)
+Koristićemo pomoćne funkcije paketa \texttt{sklearn.model\_selection}:
+\begin{itemize}
+\item cross\_val\_score (koja radi unakrsnu validaciju)
+\item means (koja vraćaocenu modela)
+\end{itemize}
 
 Funkcija means u zavisnosti od modela koji ocenjuje koristi odgovarajuću
-metodu za računanju ocene: - MSE (mean squared error) - R2 (r squared)
+metodu za računanju ocene:
+\begin{itemize}
+\item MSE (mean squared error) 
+\item R2 (r squared)
+\end{itemize}
 
     \hypertarget{randomforestclassifier}{%
-\subsubsection{RandomForestClassifier}\label{randomforestclassifier}}
+\subsection{RandomForestClassifier}\label{randomforestclassifier}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{23}{\boxspacing}
@@ -957,7 +1032,7 @@ metodu za računanju ocene: - MSE (mean squared error) - R2 (r squared)
 \end{tcolorbox}
         
     \hypertarget{decisiontreeclassifier}{%
-\subsubsection{DecisionTreeClassifier}\label{decisiontreeclassifier}}
+\subsection{DecisionTreeClassifier}\label{decisiontreeclassifier}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{24}{\boxspacing}
@@ -976,7 +1051,7 @@ metodu za računanju ocene: - MSE (mean squared error) - R2 (r squared)
 \end{tcolorbox}
         
     \hypertarget{extratreesclassifier}{%
-\subsubsection{ExtraTreesClassifier}\label{extratreesclassifier}}
+\subsection{ExtraTreesClassifier}\label{extratreesclassifier}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{25}{\boxspacing}
@@ -995,7 +1070,7 @@ metodu za računanju ocene: - MSE (mean squared error) - R2 (r squared)
 \end{tcolorbox}
         
     \hypertarget{gradientboostingclassifier}{%
-\subsubsection{GradientBoostingClassifier}\label{gradientboostingclassifier}}
+\subsection{GradientBoostingClassifier}\label{gradientboostingclassifier}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{26}{\boxspacing}
@@ -1014,8 +1089,7 @@ metodu za računanju ocene: - MSE (mean squared error) - R2 (r squared)
 \end{tcolorbox}
         
     \hypertarget{deep-learning-neural-network}{%
-\subsubsection{Deep learning neural
-network}\label{deep-learning-neural-network}}
+\subsection{Deep learning neural network}\label{deep-learning-neural-network}}
 
     U ovom modelu kreiramo neuralnu mrežu sa jednim skrivenim slojem koji
 sadrži 16 neurona.
@@ -1074,6 +1148,7 @@ sadrži 16 neurona.
 \end{Verbatim}
 \end{tcolorbox}
 
+\newpage 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1092,9 +1167,9 @@ sadrži 16 neurona.
 \end{tcolorbox}
 
     \hypertarget{odabir-modela}{%
-\subsubsection{Odabir modela}\label{odabir-modela}}
+\subsection{Odabir modela}\label{odabir-modela}}
 
-    Zaključujemo da model koji se ponaša najbolje nad našem skupu podataka
+Zaključujemo da model koji se ponaša najbolje nad našem skupu podataka
 jeste \texttt{GradientBoostingClassifier} tako da ćemo njega koristiti
 za konačno rešenje, ali ćemo povećati parametar n\_estimators koji
 predstavlja koliko drveća naš model pravi pre nego što radi takozvano
@@ -1163,8 +1238,11 @@ array([0.14168256, 0.04001523, 0.44504199, 0.05654333, 0.02099925,
     Uočavamo da su najbitnije karakteristike ime, pol i starost životinje.
 
     \hypertarget{priprema-podataka-za-testiranje}{%
-\subsubsection{Priprema podataka za
-testiranje}\label{priprema-podataka-za-testiranje}}
+\section{Predaja rešenja}\label{priprema-podataka-za-testiranje}}
+
+U ovoj sekciji ćemo objasniti preprocesiranje podataka iz skupa za testiranje kao i kako ćemo naše rešenje predati na platformi Kaggle.
+
+\subsection{Preprocesiranje skupa podataka za testiranje}
 
     Na potpuno identičan način transformišemo starost životinja iz skupa
 podataka za testiranje kao i starost životinja iz skupa podataka za
@@ -1287,10 +1365,12 @@ Kaggle}\label{formatiranje-reux161enja-za-predaju-na-platformi-kaggle}}
 \end{Verbatim}
 \end{tcolorbox}
 
-    \hypertarget{zakljuux10dak}{%
-\subsection{Zaključak}\label{zakljuux10dak}}
+\newpage 
 
-Naš model ima rezultat 0.86337 na platformi Kaggle koji je sasvim
+    \hypertarget{zakljuux10dak}{%
+\section{Zaključak}\label{zakljuux10dak}}
+
+Naš model ima rezultat 0.8574 na platformi Kaggle koji je sasvim
 prihvatljiv. Međutim lako je uočiti gde je naš model ima mesta za
 unapređenje:
 
@@ -1305,9 +1385,23 @@ jednom (labrador, ili retriver), kao i više sličnih boja predstaviti
 jednom bojom. To bi malo smanjilo prostor pretrage i verovatno dalo
 bolje rezultate na kraju.
 
-
     % Add a bibliography block to the postdoc
-    
-    
+    \begin{thebibliography}{10}
+        \bibitem{clrs}
+        Ian H. Witten, Eibe Frank, Mark A. Hall, \emph{Data Mining: Practical Machine Learning Tools and Techniques}
+        \bibitem{sci}
+        Scikit-Learn: Machine Learning in Python \emph{official documentation}
+        \bibitem{yan}
+        Yan-yan Song, Ying Lu, \emph{Decision Tree Methods: Applications for Classification and Prediction}
+        \bibitem{randomfo}
+        Anne Ruiz-Gazen, Nathalie Villa, \emph{Storms Prediction: Logistic Regression vs Random Forest for Unbalanced Data}
+        \bibitem{randomfores}
+        Matthew Wiener, \emph{Classification and Regression by RandomForest}
+        \bibitem{animals}
+        Sloane Hawes, Josephine Kerrigan, Kevin Moris, \emph{Factors Informing Outcomes for Older Cats and Dogs in Animal Shelters}
+        \end{thebibliography}
+        
+
     
 \end{document}
+

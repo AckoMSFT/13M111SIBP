@@ -1,0 +1,21 @@
+\contentsline {section}{\numberline {1}Opis problema}{2}{section.1}%
+\contentsline {section}{\numberline {2}Učitavanje, analiza i preprocesiranje ulaznih podataka}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Učitavanje potrebnih Python paketa}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Analiza ulaznih podataka}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Sudbina ljubimaca}{5}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Starost ljubimaca}{6}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Boja životinja}{8}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Rasa životinja}{9}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Pol životinja}{9}{subsubsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.4}Preprocesiranje ulaznih podataka}{10}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Poređenje modela mašinskog učenja}{13}{section.3}%
+\contentsline {subsection}{\numberline {3.1}RandomForestClassifier}{13}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}DecisionTreeClassifier}{13}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}ExtraTreesClassifier}{13}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}GradientBoostingClassifier}{14}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Deep learning neural network}{14}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Odabir modela}{15}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Predaja rešenja}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Preprocesiranje skupa podataka za testiranje}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Formatiranje rešenja za predaju na platformi Kaggle}{17}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Zaključak}{18}{section.5}%
